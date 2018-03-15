@@ -65,7 +65,7 @@ class WriteThread{
 	public String getName() {
 
 		try {
-			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost","root", "root");
+			Connection conn = DriverManager.getConnection("jdbc:mysql://211.231.160.88","root", "root");
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery("Select * From test.test");
 			
@@ -112,7 +112,7 @@ class WriteThread{
         
         try {
         	
-        	Connection conn = DriverManager.getConnection("jdbc:mysql://localhost","root", "root");
+        	Connection conn = DriverManager.getConnection("jdbc:mysql://211.231.160.88","root", "root");
 
     		sql.append(" INSERT INTO test.test(id,ip,name) ");
             sql.append(" VALUES(?, ?, ?)");
