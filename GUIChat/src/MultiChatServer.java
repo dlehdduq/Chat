@@ -70,7 +70,7 @@ class EchoThread extends Thread{
 public class MultiChatServer {
 	public static void main(String[] args) {
 		ServerSocket server = null;
-		Socket socket =null;
+		Socket socket =null;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 		//클라이언트와 연결된 소켓들을 배열처럼 저장할 벡터객체 생성
 		Vector<Socket> vec = new Vector<Socket>();
 		try{

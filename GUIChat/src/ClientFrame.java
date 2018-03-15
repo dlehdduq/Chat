@@ -1,8 +1,8 @@
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.Socket;
+
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,8 +15,13 @@ class Id extends JFrame implements ActionListener{
 	static JTextField tf=new JTextField(8);
 	JButton btn = new JButton("입력");	
 	
+	//닉네임을 아예따로 추가해볼라꼬 만듬
+	//static JTextField tf2=new JTextField(8);
+	
+	String id;
 	WriteThread wt;	
 	ClientFrame cf;
+	
 	public Id(){}
 	public Id(WriteThread wt, ClientFrame cf) {
 		super("아이디");		
@@ -27,6 +32,8 @@ class Id extends JFrame implements ActionListener{
 		setLayout(new FlowLayout());
 		add(new JLabel("아이디"));
 		add(tf);
+		//add(new JLabel("닉네임"));
+		//add(tf2);
 		add(btn);
 		
 		btn.addActionListener(this);
@@ -37,15 +44,16 @@ class Id extends JFrame implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {		
 		wt.sendMsg();	
+		//id = wt.getId();
 		cf.isFirst = false;
 		cf.setVisible(true);
 		this.dispose();
 	}
+	
 	static public String getId(){
 		return tf.getText();
 	}
 }
-
 
 
 
@@ -82,13 +90,13 @@ public class ClientFrame extends JFrame implements ActionListener{
 	}
 	
 	public void actionPerformed(ActionEvent e){
-		String id = Id.getId();
+		String name = wt.getName();
 		if(e.getSource()==btnTransfer){//전송버튼 눌렀을 경우
 			//메세지 입력없이 전송버튼만 눌렀을 경우
 			if(txtF.getText().equals("")){
 				return;
 			}			
-			txtA.append("["+id+"] "+ txtF.getText()+"\n");
+			txtA.append("["+name+"] "+ txtF.getText()+"\n");
 			wt.sendMsg();
 			txtF.setText("");
 		}else{

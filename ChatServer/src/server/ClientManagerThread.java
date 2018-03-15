@@ -35,13 +35,15 @@ public class ClientManagerThread extends Thread{
 					break;
 				}
 				
-				String[] split = text.split("highkrs12345");
+				String[] split = text.split("asdbadf");
+				
 				if(split.length == 2 && split[0].equals("ID"))
 				{
-					m_ID = split[1];
+					m_ID = split[1];		
 					System.out.println(m_ID + "이(가) 입장하였습니다.");
 					for(int i = 0; i < ChatServer.m_OutputList.size(); ++i)
 					{
+						System.out.println("m_OutputList.get{"+i+"} --->>> "+ChatServer.m_OutputList.get(i));
 						ChatServer.m_OutputList.get(i).println(m_ID + "이(가) 입장하였습니다.");
 						ChatServer.m_OutputList.get(i).flush();
 					}

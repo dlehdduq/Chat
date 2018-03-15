@@ -4,12 +4,25 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+
+
 // 키보드로 전송문자열 입력받아 서버로 전송하는 스레드
 class WriteThread{
 	Socket socket;
 	ClientFrame cf;
 	String str;
 	String id;
+	String ip;
+	String n_name;
+	String n_name2;
+	String n_name3;
+	
 	public WriteThread(ClientFrame cf) {
 		this.cf  = cf;
 		this.socket= cf.socket;
@@ -25,12 +38,13 @@ class WriteThread{
 			//첫번째 데이터는 id 이다. 상대방에게 id와 함께 내 IP를 전송한다.
 			if(cf.isFirst==true){
 				InetAddress iaddr=socket.getLocalAddress();				
-				String ip = iaddr.getHostAddress();				
-				getId();
-				System.out.println("ip:"+ip+"id:"+id);
-				str = "["+id+"] 님 로그인 ("+ip+")"; 
+				ip = iaddr.getHostAddress();	
+				id = getId();
+				n_name2 = getName();
+				System.out.println("ip:"+ip+"\t"+"id:"+id);
+				str = "["+n_name2+"] 님 로그인 ("+ip+")"; 
 			}else{
-				str= "["+id+"] "+cf.txtF.getText();
+				str= "["+n_name2+"] "+cf.txtF.getText();
 			}
 			//입력받은 문자열 서버로 보내기
 			pw.println(str);
@@ -47,8 +61,79 @@ class WriteThread{
 			}
 		}
 	}	
-	public void getId(){		
-		id = Id.getId(); 
+	
+	public String getName() {
+
+		try {
+			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost","root", "root");
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery("Select * From test.test");
+			
+			while (rs.next()) {			
+				System.out.println("while문 진입!!!!!");
+				n_name = rs.getString("name");
+				String id2 = rs.getString("id");
+				
+	            if(id.equals(id2)){
+	            	System.out.println("~~~id : "+ id + "id2 : "+id2);
+	            	n_name3 = n_name;
+	            	st.close();
+	            	conn.close();
+	            	break;
+	            } 
+	            else {
+	            	System.out.println("else 진입~~~!!");
+	            	n_name3 = insertDB();
+	                st.close();
+	            	conn.close();
+	            	break;
+	            }
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return n_name3;
+	}
+	
+	public String getId(){		
+		
+		return id = Id.getId();
+		//return id;
+		
+	}
+	
+	public String insertDB() {
+		
+        StringBuffer sql = new StringBuffer();
+        PreparedStatement  pstmt=null;
+        
+        System.out.println("insertDB실행~~~");
+        
+        try {
+        	
+        	Connection conn = DriverManager.getConnection("jdbc:mysql://localhost","root", "root");
+
+    		sql.append(" INSERT INTO test.test(id,ip,name) ");
+            sql.append(" VALUES(?, ?, ?)");
+            pstmt = conn.prepareStatement(sql.toString());
+
+        	pstmt.setNString(1, id);
+        	pstmt.setNString(2, ip);
+        	pstmt.setNString(3, id);
+        	
+            int cnt = pstmt.executeUpdate();
+            System.out.println("레코드 " + cnt + "개가 추가 되었습니다.");
+            //n_name2 = id;
+            
+            pstmt.close();
+        	conn.close();
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+        
+        return id;
 	}
 }
 //서버가 보내온 문자열을 전송받는 스레드
@@ -91,7 +176,7 @@ public class MultiChatClient {
 		Socket socket=null;
 		ClientFrame cf;
 		try{
-			socket=new Socket("192.168.0.2", 80);
+			socket=new Socket("211.231.160.88", 80);
 			System.out.println("연결성공!");
 			cf = new ClientFrame(socket);
 			new ReadThread(socket, cf).start();
