@@ -176,7 +176,7 @@ public class MultiChatClient {
 		Socket socket=null;
 		ClientFrame cf;
 		try{
-			socket=new Socket("211.231.160.88", 80);
+			socket=new Socket("211.231.157.36", 80);
 			System.out.println("연결성공!");
 			cf = new ClientFrame(socket);
 			new ReadThread(socket, cf).start();
